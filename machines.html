@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Machine Management</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<div class="navbar">
+Admin Panel
+<a href="/admin_dashboard">Dashboard</a>
+</div>
+
+<div class="container">
+
+<div class="card">
+
+<h2>Add Machine</h2>
+
+<form action="/admin/add_machine" method="POST">
+
+<input type="number" name="machineID" placeholder="Machine ID" required>
+
+<input type="text" name="model" placeholder="Model">
+
+<input type="number" name="age" placeholder="Age">
+
+<button type="submit">Add Machine</button>
+
+</form>
+
+</div>
+
+<div class="card">
+
+<h2>Machines</h2>
+
+<table>
+
+<tr>
+<th>ID</th>
+<th>Model</th>
+<th>Age</th>
+<th>Action</th>
+</tr>
+
+{% for m in machines %}
+
+<tr>
+
+<td>{{m[0]}}</td>
+<td>{{m[1]}}</td>
+<td>{{m[2]}}</td>
+
+<td>
+<a href="/admin/delete_machine/{{m[0]}}">Delete</a>
+</td>
+
+</tr>
+
+{% endfor %}
+
+</table>
+
+</div>
+
+</div>
+
+</body>
+</html>

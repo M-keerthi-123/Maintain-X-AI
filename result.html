@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Prediction Result</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<div class="navbar">
+    MaintainX AI
+    <a href="/dashboard">Dashboard</a>
+</div>
+
+<div class="container">
+
+    <div class="card">
+
+        <h2>Machine Health Report</h2>
+
+        <!-- ✅ WARNING MESSAGE -->
+        {% if warning %}
+        <div style="color: red; font-weight: bold; margin-bottom: 10px;">
+            ⚠ Warning: {{ warning }} Prediction may be inaccurate.
+        </div>
+        {% endif %}
+
+        <p><b>Health Score:</b> {{health}}%</p>
+
+        <p>
+            <b>Risk Level:</b>
+            <span class="risk-status">
+                {% if risk == "Low Risk" %}
+                    <span class="risk-circle green"></span>
+                    <span class="risk-text green-text">Low Risk</span>
+
+                {% elif risk == "Medium Risk" %}
+                    <span class="risk-circle orange"></span>
+                    <span class="risk-text orange-text">Medium Risk</span>
+
+                {% else %}
+                    <span class="risk-circle red"></span>
+                    <span class="risk-text red-text">High Risk</span>
+                {% endif %}
+            </span>
+        </p>
+
+        <p><b>Current Failure Probability:</b> {{current_prob}}</p>
+
+        {% if mode == "AUTO" and future_prob is not none %}
+        <p><b>Future Failure Probability:</b> {{future_prob}}</p>
+        {% endif %}
+
+        <p><b>Recommendation:</b> {{recommendation}}</p>
+
+        <br>
+        <button onclick="window.print()" class="btn">Download Report</button>
+
+    </div>
+
+    {% if mode != "MANUAL" %}
+    <div class="card">
+
+        <h3>Machine Health Trend</h3>
+
+        <canvas id="healthChart"></canvas>
+
+    </div>
+    {% endif %}
+
+</div>
+
+<script>
+
+fetch("/trend/{{machineID}}")
+.then(res => res.json())
+.then(data => {
+
+    if (!data || data.length === 0) {
+        console.log("No trend data available");
+        return;
+    }
+
+    let health = [];
+    let probability = [];
+    let time = [];
+
+    data.forEach(row => {
+        health.push(row[0]);
+        probability.push(row[1]);
+        time.push(row[2]);
+    });
+
+    new Chart(document.getElementById("healthChart"), {
+
+        type: "line",
+
+        data: {
+            labels: time,
+            datasets: [
+                {
+                    label: "Health Score",
+                    data: health,
+                    borderColor: "green",
+                    fill: false
+                },
+                {
+                    label: "Failure Probability",
+                    data: probability,
+                    borderColor: "red",
+                    fill: false
+                }
+            ]
+        }
+
+    });
+
+});
+
+</script>
+
+</body>
+</html>

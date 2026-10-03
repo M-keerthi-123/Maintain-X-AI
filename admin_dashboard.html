@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Admin Dashboard</title>
+<link rel="stylesheet" href="/static/style.css">
+</head>
+
+<body>
+
+<div class="navbar">
+Admin Panel
+<a href="/admin_dashboard">Dashboard</a>
+<a href="/admin/users">Users</a>
+<a href="/admin/machines">Machines</a>
+<a href="/admin/maintenance_schedule">Schedule Maintenance</a>
+<a href="/logout">Logout</a>
+</div>
+
+<div class="container">
+
+<h2>System Statistics</h2>
+
+<div class="card">
+<h3>Total Machines</h3>
+<p>{{machines}}</p>
+</div>
+
+<div class="card">
+<h3>Total Users</h3>
+<p>{{users}}</p>
+</div>
+
+<div class="card">
+<h3>Total Predictions</h3>
+<p>{{predictions}}</p>
+</div>
+
+</div>
+
+</body>
+</html>

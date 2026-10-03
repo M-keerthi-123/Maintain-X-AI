@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MaintainX AI Dashboard</title>
+    <link rel="stylesheet" href="/static/style.css">
+
+    <style>
+        .hint {
+            font-size: 12px;
+            color: gray;
+            margin-bottom: 10px;
+            display: block;
+        }
+        .error {
+            color: red;
+            margin-bottom: 10px;
+        }
+        .success {
+            color: green;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- NAVBAR -->
+<div class="navbar">
+    <div class="logo">⚙ MaintainX AI</div>
+    <div class="nav-links">
+        <a href="/history">History</a>
+        <a href="/logout" class="logout-btn">Logout</a>
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- MODE SWITCH -->
+    <div class="card mode-card">
+        <h3>System Mode</h3>
+
+        <div class="toggle-container">
+            <span>AUTO</span>
+
+            <label class="switch">
+                <input type="checkbox" onchange="toggleMode(this)"
+                {% if mode=='MANUAL' %}checked{% endif %}>
+                <span class="slider"></span>
+            </label>
+
+            <span>MANUAL</span>
+        </div>
+
+        <p class="mode-text">Current Mode: <b>{{ mode }}</b></p>
+    </div>
+
+    <!-- FLASH MESSAGES -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% for category, message in messages %}
+        <div class="{{ category }}">{{ message }}</div>
+    {% endfor %}
+    {% endwith %}
+
+    <div class="dashboard-grid">
+
+        <!-- ========================= -->
+        <!-- AUTO MODE -->
+        <!-- ========================= -->
+        {% if mode == "AUTO" %}
+        <div class="card">
+            <h2>Auto Prediction</h2>
+
+            {% if machines %}
+            <form action="/predict" method="POST">
+
+                <select name="machineID" required>
+                    {% for m in machines %}
+                    <option value="{{m[0]}}">Machine {{m[0]}}</option>
+                    {% endfor %}
+                </select>
+
+                <button type="submit">Run Prediction</button>
+            </form>
+            {% else %}
+                <p>No machines available</p>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- ========================= -->
+        <!-- MANUAL MODE -->
+        <!-- ========================= -->
+        {% if mode == "MANUAL" %}
+        <div class="card">
+            <h2>Manual Input Prediction</h2>
+
+            {% if machines %}
+            <form action="/predict" method="POST">
+
+                
+
+                <!-- VOLT -->
+                <input type="number" step="any" name="volt"
+                       placeholder="Voltage (110 - 150)"
+                      required>
+                <span class="hint">Enter voltage between 110 – 150</span>
+
+                <!-- ROTATE -->
+                <input type="number" step="any" name="rotate"
+                       placeholder="Rotation (250 - 450)"
+                     required>
+                <span class="hint">Enter rotation between 250 – 450</span>
+
+                <!-- PRESSURE -->
+                <input type="number" step="any" name="pressure"
+                       placeholder="Pressure (50 - 100)"
+                       required>
+                <span class="hint">Enter pressure between 50 – 100</span>
+
+                <!-- VIBRATION -->
+                <input type="number" step="any" name="vibration"
+                       placeholder="Vibration (10 - 60)"
+                        required>
+                <span class="hint">Enter vibration between 10 – 60</span>
+
+                <button type="submit">Predict</button>
+            </form>
+            {% else %}
+                <p>No machines available</p>
+            {% endif %}
+        </div>
+        {% endif %}
+
+    </div>
+</div>
+
+<!-- SCRIPT -->
+<script>
+function toggleMode(el){
+    if(el.checked){
+        window.location.href="/set_mode/MANUAL";
+    }else{
+        window.location.href="/set_mode/AUTO";
+    }
+}
+
+// Loading effect
+document.querySelectorAll("form").forEach(form => {
+    form.addEventListener("submit", () => {
+        document.body.style.opacity = "0.6";
+    });
+});
+</script>
+
+</body>
+</html>

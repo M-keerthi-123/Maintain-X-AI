@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+<title>Maintenance Scheduling</title>
+</head>
+
+<body>
+<h2>Maintenance Scheduling</h2>
+{% with messages = get_flashed_messages() %}
+{% if messages %}
+<div style="background:#d4edda;
+color:#155724;
+padding:10px;
+margin:10px 0;
+border-radius:5px;
+font-weight:bold;">
+{{ messages[0] }}
+</div>
+{% endif %}
+{% endwith %}
+
+
+<form action="/admin/schedule" method="POST">
+
+<label>Machine ID</label> <select name="machineID">
+{% for m in machines %}
+
+<option value="{{m[0]}}">Machine {{m[0]}}</option>
+{% endfor %}
+</select>
+
+<br><br>
+
+<label>Date</label>
+ <input type="date" name="date" required>
+
+<br><br>
+
+<label>Engineer</label> 
+<input type="text" name="engineer" required>
+
+<br><br>
+
+<button type="submit">Schedule Maintenance</button>
+
+</form>
+<hr>
+
+<h2>Scheduled Maintenance Records</h2>
+
+<table border="1" cellpadding="10">
+
+<tr>
+<th>Machine ID</th>
+<th>Date</th>
+<th>Engineer</th>
+</tr>
+
+{% for row in schedules %}
+
+<tr>
+<td>{{row[0]}}</td>
+<td>{{row[1]}}</td>
+<td>{{row[2]}}</td>
+</tr>
+
+{% endfor %}
+
+</table>
+
+<br>
+
+<a href="/admin_dashboard">Back to Dashboard</a>
+
+</body>
+</html>
